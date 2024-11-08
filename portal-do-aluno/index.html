@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    
+    <title>Home</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: sans-serif;
+        }
+
+        .navbar {
+            display: flex;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            justify-content: space-between;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);            
+            padding: 15px;
+            align-items: center;
+            height: 80px;
+            background-color: #FFF;
+            z-index: 1000;
+        }
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            margin-top: 80px;            
+            border-right: 1px solid #ccc;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            background-color: #FFF;
+            width: 370px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;    
+            overflow-y: auto;        
+        }
+
+        .fa-power-off {
+            background-color: red;
+            color: #FFF;
+            padding: 5px;
+            border-radius: 100%;
+        }
+
+        .fa-power-off:hover {
+            background-color: #ccc;
+            color: #000;
+        }
+
+        .dados {
+            display: flex;
+            flex-direction: column;
+            
+        }
+
+        .foto-aluno {
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        .foto-aluno img {
+            width: 180px;
+            border: 1px solid #ccc;
+            padding: 5px;
+        }
+
+        .info-pessoal{
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            text-align: center;
+            margin-top: 20px;
+            padding: 0 0 10px 0;
+            border-bottom: 1px solid #ccc;
+        }
+
+        .rendimento {
+            padding: 20px 20px 15px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .rendimento div {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .integral {
+            padding: 0 20px 0 20px;            
+            border-bottom: 1px solid #ccc;
+            display: flex;            
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .integral div {
+            border-right: 1px solid #ccc;
+            padding-right: 10px;
+        }
+
+        .integral div:nth-last-child(1) {
+            border: none;
+        }
+
+        .menu {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin: 20px;
+        }
+
+        .btnMenu {
+            width: 80%;
+            padding: 7px;
+            background-color: rgb(66, 148, 255);
+            box-shadow: 0 5px 8px rgba(0, 0, 0, 0.1);
+            border: none;
+            cursor: pointer;            
+            color: #FFF;
+            z-index: 2;
+            
+        }        
+
+        .btnMenu:hover {
+            background-color: #ccc;
+            color: #000;
+        }
+
+        .btnMenu .fa-folder {
+            color: rgb(252,227,0);
+        }
+
+        .btnMenu .fa-folder-open {
+            color: rgb(252,227,0);
+        }
+
+        .btnMenu:hover .fa-folder {
+            color: #000;
+        }
+
+        .btnMenu:hover .fa-folder-open {
+            color: #000;
+        }
+
+        .menuAcc {
+            display: none;            
+        }
+
+        .menuAcc-open {
+            display: flex;
+            position: relative;
+            border: 1px solid rgb(204, 204, 204);
+            flex-direction: column;
+            justify-content: center;
+            gap: 20px;
+            background-color: rgb(250, 250, 250);
+            height: fit-content;
+            width: 90%;
+            padding: 20px;
+            z-index: 1;
+            margin-bottom: 100px;            
+        }
+
+        .menuAcc-open button {
+            border: none;
+            display: flex;
+            justify-content: space-between;            
+            background-color: transparent;
+            margin: auto;
+            width: 200px;
+            padding: 10px;
+            cursor: pointer;
+            font-size: 17px;
+            border-bottom: 1px solid #ccc;
+            transition: all 0.3s ease;
+       
+        }
+
+        .menuAcc-open button:hover {
+            background-color: #ccc;
+        }
+
+        .menuAcc-open button:nth-last-child(1) {
+            border-bottom: none;
+        }
+
+        .container {
+            margin-left: 370px;
+            margin-top: 80px;
+            padding: 20px;
+        }        
+
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <span style="border: 1px solid #000; padding: 5px;">Logo da rede</span>
+
+        <span>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Consequatur, nihil id tempore eligendi </span>
+
+        <div style="">
+            <!-- <span id="hora"></span>
+            <br> -->
+            <span id="data"></span>
+        </div>
+        
+    </div>
+
+    <div class="sidebar">
+        <div class="header-sidebar" style="padding: 20px 20px 0 20px;">
+            <a href="" style="text-decoration: none; font-size: 18px;">
+                <i class="fa fa-power-off"></i>
+                <span style="color: #000;"><b>Sair</b></span>
+            </a>
+        </div>
+
+        <div class="dados">
+            <div class="foto-aluno">
+                <img src="./IMG/imgAluno.jpg" alt="">
+            </div>
+
+            <div class="info-pessoal">
+                <h3>Arthur Souza Sepp</h3>
+
+                <p><b>E-mail:</b> arthursouzasepp@gmail.com</p>
+
+                <p><b>RA:</b> 2701392313014</p>
+
+                <p><b>Ciclo:</b> 5</p>
+            </div>
+
+            <div class="rendimento">
+                <h3>Rendimento no curso:</h3>
+
+                <div class="">
+                    <span>PP:</span>
+                    <span>36,61</span>
+                </div>
+                <div class="">
+                    <span>PR:</span>
+                    <span>7,57</span>
+                </div>
+                <div class="">
+                    <span>Maior PR:</span>
+                    <span>0,00</span>
+                </div>
+                <div class="">
+                    <span>PP (Intercâmbio):</span>
+                    <span>28,05836%</span>
+                </div>
+                <div class="">
+                    <span>PR (intercâmbio):</span>
+                    <span>7,86000</span>
+                </div>               
+            </div>
+
+            <!-- Integralização -->
+            <div>
+                <h3 style="padding: 20px;">Prazo de integralização:</h3>
+                <div class="integral">                
+                    
+                    <div>
+                        <span>Cursado: 3</span>
+                    </div>
+
+                    <div>
+                        <span>Cursado: 3</span>
+                    </div>
+
+                    <div>
+                        <span>Cursado: 3</span>
+                    </div>                
+                </div>            
+            </div>
+
+            <div class="menu">
+                <button type="button" class="btnMenu" id="btnMenu" onclick="myFunction('menuAcc')">
+                    <i class="fa fa-folder yellow"></i>
+                    <span><b>Menu</b></span>
+                </button>
+
+                <div id="menuAcc" class="menuAcc">
+                    <button type="button" class="tablink" onclick="openCity(event, 'Londres')">
+                        <span>Matrícula</span>
+                        <i class="fa fa-graduation-cap"></i>
+                    </button>
+
+                    <button type="button" class="tablink" onclick="openCity(event, 'Tokyo')">
+                        <span>Consultas</span>
+                        <i class="fa fa-circle-info"></i>
+                    </button>
+
+                    <button type="button">
+                        <span>Agenda</span>
+                        <i class="fa fa-calendar-day"></i>
+                    </button>
+
+                    <button type="button">
+                        <span>Segurança</span>
+                        <i class="fa fa-lock"></i>
+                    </button>
+
+                    <button type="button">
+                        <span>Solicitações</span>
+                        <i class="fa fa-comments"></i>
+                    </button>
+
+                    <button type="button">
+                        <span>Biblioteca</span>
+                        <i class="fa fa-book"></i>
+                    </button>
+
+                    <button type="button">
+                        <span>Upload de arquivos</span>
+                        <i class="fa fa-upload"></i>
+                    </button>
+
+                    <button type="button">
+                        <span>Planos de ensino</span>
+                        <i class="fa fa-school"></i>
+                    </button>
+
+                    <button type="button">
+                        <span>Matriz em inglês</span>
+                        <i class="fa fa-flag-usa"></i>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+        
+    </div>
+
+    <div class="container">
+        
+        <div id="Londres" class="city">
+            <h1>Oieeeee</h1>
+        </div>
+
+        <div id="Tokyo" class="city" style="display: none;">
+            <h1>Outro teste</h1>
+        </div>
+    </div>
+
+    <script>
+        function updateTime() {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');            
+
+            const currentTime = `${hours}:${minutes}`;
+
+            const date = now.toLocaleDateString('pt-BR', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+
+            const day = date.split(',')[0];
+            const fullDate = date.split(',')[1];            
+
+            //document.getElementById('hora').textContent = currentTime;
+            document.getElementById('data').textContent = `${day}, ${fullDate}`;
+        }
+        setInterval(updateTime, 1000);
+
+        //Accordion:
+        function myFunction(id) {
+            var x = document.getElementById(id);
+            var folder = document.querySelector("#btnMenu i")
+            if (x.classList.contains("menuAcc-open")) {
+                x.classList.remove("menuAcc-open");
+                x.classList.add("menuAcc");
+
+                folder.classList.remove("fa-folder-open");
+                folder.classList.add("fa-folder");
+
+            } else {
+                x.classList.remove("menuAcc");
+                x.classList.add("menuAcc-open");
+
+                folder.classList.remove("fa-folder");
+                folder.classList.add("fa-folder-open");
+            }
+        }        
+        
+
+        function openCity(evt, cityName) {
+            var i, x, tablinks;
+            x = document.getElementsByClassName("city");
+            for (i = 0; i < x.length; i++) {
+              x[i].style.display = "none";
+            }
+            tablinks = document.getElementsByClassName("tablink");
+            for (i = 0; i < x.length; i++) {
+              tablinks[i].className = tablinks[i].className.replace(" active-tab", "");
+            }
+            document.getElementById(cityName).style.display = "block";
+            evt.currentTarget.className += " active-tab";
+          }
+
+        updateTime()
+    </script>
+</body>
+</html>

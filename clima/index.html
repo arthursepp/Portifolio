@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: sans-serif;
+            background-color: rgb(30, 165, 255);
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        .dashboard {
+            background-color: #FFF;            
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 10px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;            
+            overflow-y: auto;            
+            max-height: 700px;  
+            width: 400px;          
+        }
+
+        span {
+            display: block;
+            font-size: 18px;
+            font-weight: bold;
+            background-color: rgb(30, 165, 255);            
+            padding: 5px;
+            border-radius: 5px;
+            text-align: center;
+            color: #f1f1f1;
+            transition: 0.3s;
+        }
+
+        span:hover {
+            cursor: pointer;
+            background-color: rgb(40, 160, 240) ;         
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);      
+        }
+
+        .body-li {
+            text-align: center;
+            display: none;
+            padding: 10px;
+            border-bottom: 1px solid #CCC;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="dashboard">
+
+            <div class="" style="text-align: center; margin-bottom: 10px;">                
+                <h3 style="text-align: center;" id="temperatura-atual"></h3>
+            </div>
+
+            <div>
+                <span onclick="myFunction('Demo1')" class=""> Previsão para os próximos 7 dias:</span>
+                <div id="Demo1" class="w3-hide">
+                    <ul id="previsao-diaria" class="accordion-content"></ul>
+                </div>
+            </div>
+
+            <hr style="border: 1px solid #ccc;">
+
+            <div>
+                <span onclick="myFunction('Demo2')" >Previsão para o dia de hoje:</span>
+                <div class="w3-hide" id="Demo2">
+                    <ul id="previsao-horaria" class="accordion-content"></ul>
+                </div>
+            </div>            
+
+        </div>
+    </div>
+
+    <script>
+
+        function myFunction(id) {
+            var x = document.getElementById(id);
+            if (x.className.indexOf("w3-show") == -1) {
+                x.className += " w3-show";
+            } else {
+                x.className = x.className.replace(" w3-show", "");
+            }
+        }
+
+        //Obtendo dados de latitude e longitude do usuário:
+        function obterLocalizacao() {
+
+            //Se o navegador aceitar a geolocalização...
+            if (navigator.geolocation) {
+
+                //Obtenha as coordenadas de latitude e longitude:
+                navigator.geolocation.getCurrentPosition((position) => {
+                    const latitude = position.coords.latitude;
+                    const longitude = position.coords.longitude;
+                    console.log('Latitude:', latitude, '\nLongitude:', longitude);
+
+                    obterPrevisaoTempo(latitude, longitude);
+                },
+                    //Se houver um erro ao obter a localização...
+                    (error) => {
+                        console.error('Erro ao obter a localização:', error);
+                    }
+                );
+                //Caso o navegador não seja capaz de obter as coordenadas:
+            } else {
+                console.error('Geolocalização não é suportada nesse navegador.');
+            }
+
+            //Obtendo os dados do clima:
+            async function obterPrevisaoTempo(latitude, longitude) {
+                //Url da api:
+                const url = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&hourly=temperature_2m,precipitation&daily=temperature_2m_max,temperature_2m_min&timezone=America/Sao_Paulo`;
+
+                //Obtendo os dados da api por meio de um JSON:
+                try {
+                    const response = await fetch(url);
+                    const data = await response.json();
+
+                    //Exibindo a previsão do tempo na tela:                
+                    exibirPrevisao(data);
+
+                    //Caso não seja possível obter os dados:
+                } catch (error) {
+                    console.error('Erro ao obter a previsão do tempo:', error);
+                }
+            }
+        }
+
+        //Exibindo a previsão do tempo na tela:
+        function exibirPrevisao(data) {
+            //Pegando os elementos do html (ambas tags ul):
+            const resultElement = document.getElementById('previsao-diaria');
+            const resultHourly = document.getElementById('previsao-horaria');
+            const resultNow = document.getElementById('temperatura-atual');
+            
+            //Pegando os dados da api, que vieram da função obterLocalizacao:
+            const { daily, hourly } = data;
+
+            resultNow.innerHTML = `Temperatura atual: ${hourly.temperature_2m[0]}°C`;
+
+            //Limpando os elementos ul:
+            resultElement.innerHTML = '';
+            //Exibindo a previsão do tempo para os próximos 7 dias:
+            for (let i = 0; i < daily.time.length; i++) {
+                //Criando uma li para cada dia:
+                const li = document.createElement('li')
+                const bodyLi = document.createElement('div')
+
+                const contentId = `dailyContent${i}`
+
+                const dateParts = daily.time[i].split('-')
+                const formattedDate = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`
+
+                //Exibindo a previsão do tempo para cada dia:
+                li.innerHTML = `${formattedDate}`;
+                bodyLi.innerHTML = `Máxima: ${daily.temperature_2m_max[i]}°C, Mínima: ${daily.temperature_2m_min[i]}°C`;
+                
+                li.className = 'w3-btn w3-block w3-left-align';
+                li.setAttribute('onclick', `myFunction('${contentId}')`);
+
+                bodyLi.id = contentId
+                bodyLi.className = 'body-li'
+
+                resultElement.appendChild(li);
+                resultElement.appendChild(bodyLi);
+            }
+
+            //Limpando os elementos ul:
+            resultHourly.innerHTML = '';
+            //Exibindo a previsão do tempo para as 24 horas do dia de hoje:
+            for (let i = 0; i < 24; i++) {
+
+                //Criando uma li para cada horário:
+                const li = document.createElement('li');
+
+                const bodyLi = document.createElement('div');
+
+                //Pegando apenas a hora da string:
+                const time = hourly.time[i].split('T')[1];
+
+                const contentId = `hourlyContent${i}`
+
+                //Exibindo a previsão do tempo para cada hora:
+                li.innerHTML = `${time}`;
+                bodyLi.innerHTML = `Temperatura: ${hourly.temperature_2m[i]}°C;\n Precipitação: ${hourly.precipitation[i]}mm`;
+
+                li.className = 'w3-btn w3-block w3-left-align';
+                li.setAttribute('onclick', `myFunction('${contentId}')`);                
+
+                bodyLi.id = contentId                
+                bodyLi.className = 'body-li'
+
+                resultHourly.appendChild(li);
+                resultHourly.appendChild(bodyLi);
+            }
+        }
+
+        obterLocalizacao()
+
+    </script>
+</body>
+
+</html>

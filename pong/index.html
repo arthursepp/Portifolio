@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pong</title>
+    <style>
+        /* Estilos para organizar o layout e aparência do jogo */
+        #gameContainer {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;            
+            margin: auto;
+            gap: 10px;
+        }
+
+        #gameBoard {
+            border: 1px solid #ccc;
+        }
+
+        #scoreText {
+            font-family: sans-serif;
+            font-size: 80px;
+            text-align: center;
+        }
+
+        #resetButton {                        
+            font-size: 22px;
+            width: 100px;
+            height: 50px;
+            border: none;
+            border-radius: 15px;
+            background-color: rgb(57, 192, 255);
+            color: #FFF;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <!-- Contêiner principal do jogo -->
+    <div id="gameContainer">
+        <!-- Tela onde o jogo é desenhado -->
+        <canvas id="gameBoard" width="500" height="500"></canvas>
+        <!-- Texto de pontuação -->
+        <div id="scoreText">0 : 0</div>
+        <!-- Botão de reset -->
+        <button id="resetButton">Reset</button>
+    </div>
+
+    <script>
+        // Seleção dos elementos principais do HTML
+        const gameBoard = document.querySelector("#gameBoard");
+        const context = gameBoard.getContext("2d");
+        const scoreText = document.querySelector("#scoreText");
+        const resetButton = document.querySelector("#resetButton");
+
+        // Configurações e variáveis principais do jogo
+        const gameWidth = gameBoard.width;
+        const gameHeight = gameBoard.height;
+
+        const boardBackground = "forestgreen";
+        const paddle1Color = "lightblue";
+        const paddle2Color = "red";
+        const paddleBorder = "black";
+
+        const ballColor = "yellow";
+        const ballBorderColor = "black";
+        const ballRadius = 12.5;
+
+        const paddleSpeed = 50; // Velocidade das raquetes
+
+        // Variáveis para a bola e placar
+        let intervalId;
+        let ballSpeed = 1;
+        let ballX = gameWidth / 2;
+        let ballY = gameHeight / 2;
+        let ballXDirection = 0;
+        let ballYDirection = 0;
+
+        let player1Score = 0;
+        let player2Score = 0;
+        // Configurações das raquetes dos jogadores
+        let paddle1 = {
+            width: 25,
+            height: 100,
+            x: 0,
+            y: 0
+        }
+        let paddle2 = {
+            width: 25,
+            height: 100,
+            x:gameWidth - 25,
+            y: gameHeight - 100
+        }
+
+        // Eventos de teclado e botão
+        window.addEventListener("keydown", changeDirection);
+        resetButton.addEventListener("click", resetGame);
+
+        gameStart() // Inicia o jogo
+
+        // Função para inicializar o jogo
+        function gameStart() {
+            createBall(); // Cria a bola
+            nextTick(); // Inicia o loop de jogo
+        }
+
+        // Função para o loop do jogo
+        function nextTick() {
+            intervalId = setTimeout(() => {
+                clearBoard() // Limpa o quadro
+                drawPaddles() // Desenha as raquetes
+                moveBall() // Move a bola
+                drawBall(ballX, ballY) // Desenha a bola
+                checkCollision() // Checa colisões
+                nextTick() // Chama o próximo frame
+            }, 10)
+        }
+
+        // Limpa o quadro de jogo
+        function clearBoard() {
+            context.fillStyle = boardBackground;
+            context.fillRect(0, 0, gameWidth, gameHeight);
+        }
+
+        // Desenha as raquetes no quadro
+        function drawPaddles() {
+            context.strokeStyle = paddleBorder;
+
+            // Desenha a raquete do jogador 1
+            context.fillStyle = paddle1Color;
+            context.fillRect(paddle1.x, paddle1.y, paddle1.width, paddle1.height);
+            context.strokeRect(paddle1.x, paddle1.y, paddle1.width, paddle1.height);
+
+            // Desenha a raquete do jogador 2
+            context.fillStyle = paddle2Color;
+            context.fillRect(paddle2.x, paddle2.y, paddle2.width, paddle2.height);
+            context.strokeRect(paddle2.x, paddle2.y, paddle2.width, paddle2.height);
+        }
+
+        // Cria a bola com direção aleatória
+        function createBall() {
+            ballSpeed = 1;
+
+            ballXDirection = Math.round(Math.random()) == 1 ? 1 : -1;
+            ballYDirection = Math.round(Math.random()) == 1 ? 1 : -1;
+
+            ballX = gameWidth / 2;
+            ballY = gameHeight / 2;
+            drawBall(ballX, ballY);
+        }
+
+        // Movimenta a bola de acordo com a velocidade e direção
+        function moveBall() {
+            ballX += (ballSpeed * ballXDirection);
+            ballY += (ballSpeed * ballYDirection);
+        }
+
+        // Desenha a bola no quadro
+        function drawBall(ballX, ballY) {
+            context.fillStyle = ballColor;
+            context.strokeStyle = ballBorderColor;
+            context.lineWidth = 2;
+            context.beginPath();
+            context.arc(ballX, ballY, ballRadius, 0, Math.PI * 2);
+            context.stroke();
+            context.fill();
+        }
+
+        // Checa colisões da bola com bordas e raquetes
+        function checkCollision() {
+            // Colisão com o topo e base
+            if (ballY <= 0 + ballRadius || ballY >= gameHeight - ballRadius) {
+                ballYDirection *= -1;
+            }
+
+            // Verifica se a bola passou dos limites horizontais
+            if (ballX <= 0) {
+                player2Score+=1;
+                updateScore();
+                createBall();
+                return;
+            }
+            if (ballX >= gameWidth) {
+                player1Score+=1;
+                updateScore();
+                createBall();
+            }
+
+            // Colisão com a raquete do jogador 1
+            if (ballX <= (paddle1.x + paddle1.width + ballRadius) && ballY > paddle1.y && ballY <= (paddle1.y + paddle1.height)) {
+                ballX = (paddle1.x + paddle1.width) + ballRadius;
+                ballXDirection *= -1;
+                ballSpeed += 0.2;
+            }
+
+            // Colisão com a raquete do jogador 2
+            if (ballX >= (paddle2.x - ballRadius) && ballY > paddle2.y && ballY <= (paddle2.y + paddle2.height)) {
+                ballX = paddle2.x - ballRadius;
+                ballXDirection *= -1;
+                ballSpeed += 0.2;
+            }
+        }
+
+        // Função para alterar a direção das raquetes
+        function changeDirection(event) {
+            const keyPressed = event.keyCode;
+            console.log(keyPressed);
+
+            // Teclas para os jogadores 1 (W e S) e 2 (Setas)
+            const paddle1Up = 87;
+            const paddle1Down = 83;
+            const paddle2Up = 38;
+            const paddle2Down = 40;
+
+            // Muda a posição das raquetes com base na tecla pressionada
+            switch (keyPressed) {                
+                case paddle1Up:
+                    if (paddle1.y > 0) paddle1.y -= paddleSpeed;
+                    break;
+                case paddle1Down:
+                    if (paddle1.y < gameHeight - paddle1.height) paddle1.y += paddleSpeed;
+                    break;
+                case paddle2Up:
+                    if (paddle2.y > 0) paddle2.y -= paddleSpeed;
+                    break;
+                case paddle2Down:
+                    if (paddle2.y < gameHeight - paddle2.height) paddle2.y += paddleSpeed;
+                    break;
+            }
+        }
+
+        // Atualiza o placar
+        function updateScore() {
+            scoreText.textContent = `${player1Score} : ${player2Score}`;
+        }
+
+        // Reinicia o jogo e os placares
+        function resetGame() {
+            player1Score = 0;
+            player2Score = 0;
+
+            paddle1.y = 0;
+            paddle2.y = gameHeight - paddle2.height;
+
+            updateScore();
+            createBall();
+            clearInterval(intervalId);
+            gameStart();
+        }
+
+    </script>
+</body>
+</html>
