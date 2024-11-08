@@ -2,8 +2,7 @@ from django.contrib import admin
 from .models import *
 
 admin.site.register(Perfil)
-admin.site.register(Filme)
-admin.site.register(Serie)
+admin.site.register(Producao)
 admin.site.register(Poster)
 admin.site.register(Ator)
 admin.site.register(Genero)

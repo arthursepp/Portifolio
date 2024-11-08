@@ -40,46 +40,32 @@ class Genero(models.Model):
     
     def __str__(self):
         return self.nome
-class Filme(models.Model):
+class Producao(models.Model):
     nome = models.CharField(max_length=150)
     poster = models.OneToOneField(Poster, on_delete=models.CASCADE, related_name='filme', blank=True, null=True)
     data_lancamento = models.DateField()
     diretor = models.ManyToManyField(Diretor, related_name='filmes_dirigidos')
     elenco = models.ManyToManyField(Ator, related_name='filmes_participados')
     genero = models.ManyToManyField(Genero, related_name='filmes_genero')
+    tipo_choices = [ ('FILME', 'Filme'), ('SERIE', 'Série') ]
+    tipo = models.CharField(max_length=5, choices=tipo_choices)
     nome_original = models.CharField(max_length=150)
     
     def __str__(self):
         return self.nome
-
-class Serie(models.Model):
-    nome = models.CharField(max_length=150)
-    poster = models.OneToOneField(Poster, on_delete=models.CASCADE, related_name='serie', blank=True, null=True)
-    ano_lancamento = models.CharField(max_length=4)
-    ano_final = models.CharField(max_length=4, blank=True, null=True)
-    criador = models.ManyToManyField(ProdutorSerie, related_name='series_criadas')
-    elenco = models.ManyToManyField(Ator, related_name='series_participadas')
-    genero = models.ManyToManyField(Genero, related_name='series_genero')
-    nome_original = models.CharField(max_length=150)
-    
-    def __str__(self):
-        return self.nome
-
 
 class Perfil(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='perfil')
-    series_favoritas = models.ManyToManyField(Serie, related_name='series_favoritas')
-    filmes_favoritos = models.ManyToManyField(Filme, related_name='filmes_favoritos')
+    producoes_favoritas = models.ManyToManyField(Producao, related_name='series_favoritas')    
     
     def __str__(self):
-        return f'Perfil de {self.user.get_short_name()}'
+        return self.user.username
 
 class Comentario(models.Model):
     autor = models.ForeignKey(Perfil, on_delete=models.CASCADE, related_name='comentarios')
     texto = models.TextField()
     data = models.DateTimeField(auto_now_add=True)
-    serie = models.ForeignKey(Serie, on_delete=models.CASCADE, related_name='comentarios', blank=True, null=True)
-    filme = models.ForeignKey(Filme, on_delete=models.CASCADE, related_name='comentarios', blank=True, null=True)
+    Producao = models.ForeignKey(Producao, on_delete=models.CASCADE, related_name='comentarios', blank=True, null=True)    
     
     def __str__(self):
         return f'Comentário de {self.autor} em {self.data}'
