@@ -1,0 +1,54 @@
+
+{% extends "base.html" %} 
+{% block title %} Home {% endblock title %} 
+{% block content %}
+<div class="navbar">
+  <a href="/" class="to-home">
+    <div style="display: flex; gap: 7px">
+      <i class="fa fa-arrow-left"></i>
+      <i class="fa fa-home"></i>
+    </div>
+    <span>Home</span>
+  </a>
+</div>
+
+<div class="container">
+  <form action="{% url 'account_login' %}" class="form-login" method="post">
+    <h2 style="text-align: center; padding: 10px">Login</h2>
+    {% csrf_token %}
+    <div class="input-field">
+      <label for="id_login">Username:</label>
+      <input
+        type="text"
+        name="login"
+        id="id_login"
+        placeholder="11902344414"
+        autocomplete="username"
+        required
+      />
+    </div>
+
+    <div class="input-field">
+      <label for="id_password">Senha:</label>
+      <input
+        type="password"
+        name="password"
+        id="id_password"
+        placeholder="138484ASDF"
+        autocomplete="current-password"
+        required
+      />
+    </div>
+
+    <div class="input-field-check" style="padding: 10px">
+      <label for="id_remember">Continuar logado:</label>
+      <input type="checkbox" name="remember" id="id_remember" />
+    </div>
+
+    <div style="display: flex; justify-content: center">
+      <button type="submit">Entrar</button>
+    </div>
+  </form>
+</div>
+{% endblock %}
+

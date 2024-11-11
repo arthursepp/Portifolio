@@ -1,0 +1,43 @@
+{% extends "base.html" %} 
+{% block title %}Adicionar novo post{% endblock %}
+
+{% block content %}
+
+<!-- Navbar -->
+<div class="navbar">
+  <div class="links" style="display: flex; gap: 15px;">
+    <a href="{% url 'home' %}" class="to-home">
+      <div style="display: flex; gap: 7px;">
+        <i class="fa fa-arrow-left"></i>
+        <i class="fa fa-home"></i>
+      </div>
+      <span>Home</span>
+    </a>    
+    <a href="#">Sobre</a>
+    <a href="#">Contato</a>
+  </div>
+
+  <div>
+    <form action="{% url 'account_logout' %}" method="post">
+      {% csrf_token %}
+      <button type="submit" class="btn-sair">Sair</button>
+    </form>
+  </div>
+</div>
+
+<!-- Formulário de Novo Post -->
+<div class="container">
+  <form method="post" action="{% url 'novo_post' %}" class="novo-post">
+    {% csrf_token %}
+    <h2 style="text-align: center;">Adicionar Novo Post</h2>
+
+    <!-- Renderizando o Formulário Django -->
+    {{ form.as_p }}
+
+    <div style="display: flex; justify-content: center;">
+      <button type="submit">Enviar</button>
+    </div>
+  </form>
+</div>
+
+{% endblock %}

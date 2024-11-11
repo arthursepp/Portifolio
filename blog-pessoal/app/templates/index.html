@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %} Home {% endblock title %}
+
+{% block content %}
+<div class="navbar">
+  <div class="links" style="display: flex; gap: 15px">
+    <a href="">Sobre</a>
+    <a href="">Contato</a>
+  </div>
+
+  <div>
+    <a href="accounts/login" class="to-home">
+      <span>Nova postagem</span>
+      <i class="fa fa-add"></i>
+    </a>
+  </div>
+</div>
+
+<div class="container-posts">
+  <div class="posts">
+    {% if postagem %}
+      {% for post in postagem %}
+      <div class="post">
+        <h2>{{ post.titulo }}</h2>
+        <p>{{ post.conteudo|linebreaks }}</p>
+
+        <div class="dados-postagem">
+          <div>
+            <b>Autor:</b> {{ post.autor }}
+          </div>
+          <div>
+            <b>Data:</b> {{ post.data }}
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    {% else %}
+      <h1>Nenhuma postagem encontrada</h1>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
+
