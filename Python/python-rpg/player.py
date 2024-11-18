@@ -41,43 +41,46 @@ class Player(pygame.sprite.Sprite):
             self.animations[animation] = import_folder(full_path)      
         
     def input(self):
-        keys = pygame.key.get_pressed()
         
-        # Movimento do jogador:
-        if keys[pygame.K_UP]:
-            self.direction.y = -1
-            self.status = 'up'
+        if not self.attacking:
             
-        elif keys[pygame.K_DOWN]:
-            self.direction.y = 1
-            self.status = 'down'
+            keys = pygame.key.get_pressed()
             
-        else:
-            self.direction.y = 0
+            # Movimento do jogador:
+            if keys[pygame.K_UP]:
+                self.direction.y = -1
+                self.status = 'up'
+                
+            elif keys[pygame.K_DOWN]:
+                self.direction.y = 1
+                self.status = 'down'
+                
+            else:
+                self.direction.y = 0
+                
+            if keys[pygame.K_LEFT]:
+                self.direction.x = -1
+                self.status = 'left'
+                
+            elif keys[pygame.K_RIGHT]:
+                self.direction.x = 1            
+                self.status = 'right'
+                
+            else:
+                self.direction.x = 0
+                
+            # Ataque do jogador
+            if keys[pygame.K_SPACE]:
+                self.attacking = True
+                self.attack_time = pygame.time.get_ticks()
+                print('attack')
             
-        if keys[pygame.K_LEFT]:
-            self.direction.x = -1
-            self.status = 'left'
-            
-        elif keys[pygame.K_RIGHT]:
-            self.direction.x = 1            
-            self.status = 'right'
-            
-        else:
-            self.direction.x = 0
-            
-        # Ataque do jogador
-        if keys[pygame.K_SPACE] and not self.attacking:
-            self.attacking = True
-            self.attack_time = pygame.time.get_ticks()
-            print('attack')
+            #Mágica do jogador:
+            if keys[pygame.K_LCTRL]:
+                self.attacking = True
+                self.attack_time = pygame.time.get_ticks()
+                print('magic')
         
-        #Mágica do jogador:
-        if keys[pygame.K_LCTRL] and not self.attacking:
-            self.attacking = True
-            self.attack_time = pygame.time.get_ticks()
-            print('magic')
-    
     def get_status(self):
         
         # Status do sprite:
