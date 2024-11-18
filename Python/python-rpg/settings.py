@@ -1,4 +1,5 @@
-WIDTH = 1280
-HEIGHT = 720
-FPS = 60
-TILESIZE = 64
+# Configurações do jogo
+WIDTH = 1280  # Largura da janela do jogo
+HEIGHT = 720  # Altura da janela do jogo
+FPS = 60  # Frames por segundo
+TILESIZE = 64  # Tamanho dos tiles

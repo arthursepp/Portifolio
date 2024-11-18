@@ -2,31 +2,21 @@ from csv import reader
 from os import walk
 import pygame
 
+# Função para importar o layout do mapa a partir de um arquivo CSV
 def import_csv_layout(path):
-    
     terrain_map = []
-    
     with open(path) as level_map:
-        
-        layout = reader(level_map, delimiter = ',')
+        layout = reader(level_map, delimiter=',')
         for row in layout:
             terrain_map.append(list(row))
-        
-        return terrain_map
+    return terrain_map
 
+# Função para importar todas as imagens de uma pasta
 def import_folder(path):
-    for _,__,img_files in walk(path):
-        
-        surface_list = []
-        
+    surface_list = []
+    for _, __, img_files in walk(path):
         for image in img_files:
             full_path = path + '/' + image
-            
-            image_surf = pygame.image.load(full_path).convert_alpha()            
-            surface_list.append(image_surf)            
-            # print(full_path)
-            
-    return surface_list        
-    
-# import_folder('python/python-rpg/graphics/Grass')
-# print(import_csv_layout('Python/python-rpg/map/map_FloorBlocks.csv'))
+            image_surf = pygame.image.load(full_path).convert_alpha()
+            surface_list.append(image_surf)
+    return surface_list
