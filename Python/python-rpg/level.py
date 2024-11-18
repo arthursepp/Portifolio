@@ -4,6 +4,7 @@ from tile import Tile
 from player import Player
 from debug import debug
 from support import *
+from random import choice
 class Level:
     def __init__(self):
         self.display_surface = pygame.display.get_surface()
@@ -17,12 +18,18 @@ class Level:
         
         layout = {
             'boundary': import_csv_layout('Python/python-rpg/map/map_FloorBlocks.csv'),
+            'grass': import_csv_layout('Python/python-rpg/map/map_Grass.csv'),
+            'object': import_csv_layout('Python/python-rpg/map/map_Objects.csv'),
         }
+        
+        graphics = {
+            'grass': import_folder('Python/python-rpg/graphics/Grass'),            
+            'object': import_folder('Python/python-rpg/graphics/Objects'),
+        }        
         
         for style,layout in layout.items():        
             for row_index, row in enumerate(layout):            
-                for col_index, col in enumerate(row):
-                    
+                for col_index, col in enumerate(row):                    
                     
                     if col != '-1':                    
                         x = col_index * TILESIZE
@@ -30,12 +37,18 @@ class Level:
                         
                         if style == 'boundary':
                             Tile((x, y), [self.obstacle_sprites], 'invisible')
-              
-        #         if col == 'x':
-        #             Tile((x, y), [self.visible_sprites, self.obstacle_sprites])
-                    
-        #         if col == 'p':
-        #             self.player = Player((x, y), [self.visible_sprites], self.obstacle_sprites)
+                        
+                        #Criando tile de grama:
+                        if style == 'grass':
+                            random_grass_image = choice(graphics['grass'])
+                            Tile((x,y), [self.visible_sprites, self.obstacle_sprites], 'grass', random_grass_image)
+                            # Tile((x,y), [self.visible_sprites], 'grass', random_grass_image)
+                            
+                        #Criando tile de objeto:
+                        if style == 'object':
+                            surf = graphics['object'][int(col)]
+                            Tile((x,y), [self.visible_sprites, self.obstacle_sprites], 'object', surf)
+
         
         self.player = Player((2000, 1430), [self.visible_sprites], self.obstacle_sprites)
         
