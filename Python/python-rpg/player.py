@@ -26,10 +26,12 @@ class Player(pygame.sprite.Sprite):
         self.attack_time = None       
         
         self.create_attack = create_attack
+        self.weapon_index = 0
+        self.weapon = list(weapon_data.keys())[self.weapon_index]
+        print(self.weapon)
         
         self.obstacle_sprites = obstacle_sprites
         
-
     def import_player_assets(self):
         character_path = 'Python/python-rpg/graphics/player/'
         
@@ -70,14 +72,12 @@ class Player(pygame.sprite.Sprite):
             if keys[pygame.K_SPACE]:
                 self.attacking = True
                 self.attack_time = pygame.time.get_ticks()
-                self.create_attack()
-                print('attack')
+                self.create_attack()                
             
             # Mágica do jogador
             if keys[pygame.K_LCTRL]:
                 self.attacking = True
                 self.attack_time = pygame.time.get_ticks()
-                
                 print('magic')
         
     def get_status(self):
