@@ -5,6 +5,7 @@ from player import Player
 from debug import debug
 from support import *
 from random import choice
+from weapon import Weapon
 
 class Level:
     def __init__(self):
@@ -52,7 +53,10 @@ class Level:
                             Tile((x, y), [self.visible_sprites, self.obstacle_sprites], 'object', surf)
 
         # Cria o jogador
-        self.player = Player((2000, 1430), [self.visible_sprites], self.obstacle_sprites)
+        self.player = Player((2000, 1430), [self.visible_sprites], self.obstacle_sprites, self.create_attack)
+        
+    def create_attack(self):
+        Weapon(self.player, [self.visible_sprites])
         
     def run(self):
         # Desenha e atualiza os sprites visíveis
