@@ -14,4 +14,8 @@ HTML, CSS e Javascript puros.
 
 + Node.js Socket.IO
 
-Para instalar as dependências, digite *** npm install express socket.io ***
+Para instalar as dependências, digite **npm install express socket.io**
+
+---
+
+O app está atualmente publicado no Glitch, e pode ser acessado pela url  https://oasis-platinum-physician.glitch.me/
