@@ -9,4 +9,4 @@ Videogame RPG desenvolvido com python seguindo tutorial na internet.
 
 **url do tutorial: https://www.youtube.com/watch?v=QU1pPzEGrqw&t=431s**
 
-Tempo do tutorial em que pausei o desenvolvimento: 2:30:25
+Tempo do tutorial em que pausei o desenvolvimento: 3:44:10

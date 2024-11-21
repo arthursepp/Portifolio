@@ -1,137 +1,136 @@
-import pygame
-from settings import *
-from support import *
+import pygame  # Importa a biblioteca pygame
+from settings import *  # Importa todas as configurações do arquivo settings.py
+from support import *  # Importa funções de suporte
 
-class Player(pygame.sprite.Sprite):
+class Player(pygame.sprite.Sprite):  # Define a classe Player que herda de pygame.sprite.Sprite
     def __init__(self, pos, groups, obstacle_sprites, create_attack, destroy_attack):
-        super().__init__(groups)
-        self.image = pygame.image.load('Python/python-rpg/graphics/test/player.png').convert_alpha()
-        self.rect = self.image.get_rect(topleft=pos)
+        super().__init__(groups)  # Inicializa a classe base com os grupos de sprites
+        self.image = pygame.image.load('Python/python-rpg/graphics/test/player.png').convert_alpha()  # Carrega a imagem do jogador
+        self.rect = self.image.get_rect(topleft=pos)  # Define o retângulo do jogador
         
         # Cria a hitbox do jogador
-        self.hitbox = self.rect.inflate(0, -26)
+        self.hitbox = self.rect.inflate(0, -26)  # Reduz a altura da hitbox
         
         # Importa as animações do jogador
         self.import_player_assets()
         
-        self.status = 'down'
-        self.frame_index = 0
-        self.animation_speed = 0.15
+        self.status = 'down'  # Define o status inicial do jogador
+        self.frame_index = 0  # Índice do quadro de animação
+        self.animation_speed = 0.15  # Velocidade da animação
 
         # Movimento do jogador
-        self.direction = pygame.math.Vector2()        
-        self.attacking = False
-        self.attack_cooldown = 400
-        self.attack_time = None       
+        self.direction = pygame.math.Vector2()  # Vetor de direção do jogador
+        self.attacking = False  # Estado de ataque do jogador
+        self.attack_cooldown = 400  # Tempo de recarga do ataque
+        self.attack_time = None  # Tempo do último ataque
         
-        self.create_attack = create_attack
-        self.destroy_attack = destroy_attack
-        self.weapon_index = 0
-        self.weapon = list(weapon_data.keys())[self.weapon_index]
-        print(self.weapon)
-        self.can_switch_weapon = True
-        self.weapon_switch_time = None
-        self.switch_duration_cooldown = 200
+        self.create_attack = create_attack  # Função para criar ataque
+        self.destroy_attack = destroy_attack  # Função para destruir ataque
+        self.weapon_index = 0  # Índice da arma atual
+        self.weapon = list(weapon_data.keys())[self.weapon_index]  # Nome da arma atual
+        self.can_switch_weapon = True  # Estado de troca de arma
+        self.weapon_switch_time = None  # Tempo da última troca de arma
+        self.switch_duration_cooldown = 200  # Tempo de recarga da troca de arma
         
-        self.obstacle_sprites = obstacle_sprites
+        self.obstacle_sprites = obstacle_sprites  # Sprites de obstáculos
         
-        #Status
-        self.stats = {'health': 100, 'energy': 60, 'attack': 10, 'magic': 4, 'speed': 5}
-        self.health = self.stats['health']
-        self.energy = self.stats['energy']
-        self.exp = 123
-        self.speed = self.stats['speed']
+        # Status
+        self.stats = {'health': 100, 'energy': 60, 'attack': 10, 'magic': 4, 'speed': 5}  # Atributos do jogador
+        self.health = self.stats['health']  # Vida do jogador
+        self.energy = self.stats['energy']  # Energia do jogador
+        self.exp = 123  # Experiência do jogador
+        self.speed = self.stats['speed']  # Velocidade do jogador
         
     def import_player_assets(self):
-        character_path = 'Python/python-rpg/graphics/player/'
+        character_path = 'Python/python-rpg/graphics/player/'  # Caminho das animações do jogador
         
         self.animations = {
             'up': [], 'down': [], 'left': [], 'right': [],
             'up_idle': [], 'down_idle': [], 'left_idle': [], 'right_idle': [],
             'up_attack': [], 'down_attack': [], 'left_attack': [], 'right_attack': [],
-        }
+        }  # Dicionário de animações
         
         for animation in self.animations.keys():
-            full_path = character_path + animation
-            self.animations[animation] = import_folder(full_path)      
+            full_path = character_path + animation  # Caminho completo da animação
+            self.animations[animation] = import_folder(full_path)  # Importa a animação
         
     def input(self):
         if not self.attacking:
-            keys = pygame.key.get_pressed()
+            keys = pygame.key.get_pressed()  # Obtém as teclas pressionadas
             
             # Movimento do jogador
             if keys[pygame.K_UP]:
-                self.direction.y = -1
+                self.direction.y = -1  # Move para cima
                 self.status = 'up'
             elif keys[pygame.K_DOWN]:
-                self.direction.y = 1
+                self.direction.y = 1  # Move para baixo
                 self.status = 'down'
             else:
-                self.direction.y = 0
+                self.direction.y = 0  # Para de mover verticalmente
                 
             if keys[pygame.K_LEFT]:
-                self.direction.x = -1
+                self.direction.x = -1  # Move para a esquerda
                 self.status = 'left'
             elif keys[pygame.K_RIGHT]:
-                self.direction.x = 1            
+                self.direction.x = 1  # Move para a direita
                 self.status = 'right'
             else:
-                self.direction.x = 0
+                self.direction.x = 0  # Para de mover horizontalmente
                 
             # Ataque do jogador
             if keys[pygame.K_SPACE]:
-                self.attacking = True
-                self.attack_time = pygame.time.get_ticks()
-                self.create_attack()                
+                self.attacking = True  # Inicia o ataque
+                self.attack_time = pygame.time.get_ticks()  # Registra o tempo do ataque
+                self.create_attack()  # Cria o ataque
             
             # Mágica do jogador
             if keys[pygame.K_LCTRL]:
-                self.attacking = True
-                self.attack_time = pygame.time.get_ticks()
-                print('magic')
+                self.attacking = True  # Inicia a mágica
+                self.attack_time = pygame.time.get_ticks()  # Registra o tempo da mágica
+                print('magic')  # Exibe "magic" no console
         
             if keys[pygame.K_q] and self.can_switch_weapon:
-                self.can_switch_weapon = False
-                self.weapon_switch_time = pygame.time.get_ticks()                
+                self.can_switch_weapon = False  # Desabilita a troca de arma
+                self.weapon_switch_time = pygame.time.get_ticks()  # Registra o tempo da troca
                 
                 if self.weapon_index < len(list(weapon_data.keys())) - 1:
-                    self.weapon_index += 1
+                    self.weapon_index += 1  # Troca para a próxima arma
                 else:
-                    self.weapon_index = 0
+                    self.weapon_index = 0  # Volta para a primeira arma
                     
-                self.weapon = list(weapon_data.keys())[self.weapon_index]
+                self.weapon = list(weapon_data.keys())[self.weapon_index]  # Atualiza a arma atual
         
     def get_status(self):
         # Atualiza o status do jogador
         if self.direction.x == 0 and self.direction.y == 0:
-            if not 'idle' in self.status and not 'attack' in self.status:
-                self.status = self.status + '_idle'
+            if 'idle' not in self.status and 'attack' not in self.status:
+                self.status = self.status + '_idle'  # Define o status como idle
                 
         if self.attacking:
-            self.direction.x = 0
-            self.direction.y = 0
+            self.direction.x = 0  # Para de mover horizontalmente
+            self.direction.y = 0  # Para de mover verticalmente
             
-            if not 'attack' in self.status:
+            if 'attack' not in self.status:
                 if 'idle' in self.status:
-                    self.status = self.status.replace('_idle', '_attack')
+                    self.status = self.status.replace('_idle', '_attack')  # Troca idle por attack
                 else:
-                    self.status = self.status + '_attack'
+                    self.status = self.status + '_attack'  # Adiciona attack ao status
         else:
             if 'attack' in self.status:
-                self.status = self.status.replace('_attack', '')
+                self.status = self.status.replace('_attack', '')  # Remove attack do status
     
     def move(self, speed):
         # Normaliza o vetor de direção
         if self.direction.magnitude() != 0:
-            self.direction = self.direction.normalize()
+            self.direction = self.direction.normalize()  # Normaliza a direção
         
         # Move o jogador horizontalmente
         self.hitbox.x += self.direction.x * speed
-        self.collision('horizontal')
+        self.collision('horizontal')  # Verifica colisões horizontais
         
         # Move o jogador verticalmente
         self.hitbox.y += self.direction.y * speed
-        self.collision('vertical')
+        self.collision('vertical')  # Verifica colisões verticais
         
         # Atualiza a posição do retângulo do jogador
         self.rect.center = self.hitbox.center
@@ -157,29 +156,29 @@ class Player(pygame.sprite.Sprite):
         
     def cooldowns(self):
         # Lida com o cooldown dos ataques
-        current_time = pygame.time.get_ticks()
+        current_time = pygame.time.get_ticks()  # Obtém o tempo atual
         if self.attacking:
             if current_time - self.attack_time >= self.attack_cooldown:
-                self.attacking = False
-                self.destroy_attack()
+                self.attacking = False  # Termina o ataque
+                self.destroy_attack()  # Destroi o ataque
         
         if not self.can_switch_weapon:
             if current_time - self.weapon_switch_time >= self.switch_duration_cooldown:
-                self.can_switch_weapon = True
+                self.can_switch_weapon = True  # Permite trocar de arma novamente
                 
     def animate(self):
         # Anima o jogador
-        animation = self.animations[self.status]
-        self.frame_index += self.animation_speed
+        animation = self.animations[self.status]  # Obtém a animação atual
+        self.frame_index += self.animation_speed  # Atualiza o índice do quadro
         if self.frame_index >= len(animation):
-            self.frame_index = 0
-        self.image = animation[int(self.frame_index)]
-        self.rect = self.image.get_rect(center=self.hitbox.center)
+            self.frame_index = 0  # Reinicia o índice do quadro
+        self.image = animation[int(self.frame_index)]  # Atualiza a imagem do jogador
+        self.rect = self.image.get_rect(center=self.hitbox.center)  # Atualiza o retângulo do jogador
                 
     def update(self):
         # Atualiza o jogador
-        self.input()
-        self.cooldowns()
-        self.get_status()
-        self.animate()
-        self.move(self.speed)
+        self.input()  # Lê a entrada do jogador
+        self.cooldowns()  # Verifica os cooldowns
+        self.get_status()  # Atualiza o status do jogador
+        self.animate()  # Anima o jogador
+        self.move(self.speed)  # Move o jogador
