@@ -57,10 +57,20 @@ class Level:
                             Tile((x, y), [self.visible_sprites, self.obstacle_sprites], 'object', surf)  # Cria um tile de objeto
 
         # Cria o jogador
-        self.player = Player((2000, 1430), [self.visible_sprites], self.obstacle_sprites, self.create_attack, self.destroy_attack)  # Inicializa o jogador
+        self.player = Player(
+            (2000, 1430),
+            [self.visible_sprites],
+            self.obstacle_sprites,
+            self.create_attack,
+            self.destroy_attack,
+            self.create_magic
+        )  # Inicializa o jogador
     
     def create_attack(self):
         self.current_attack = Weapon(self.player, [self.visible_sprites])  # Cria um ataque e o adiciona aos sprites visíveis
+    
+    def create_magic(self,style,strength,cost):
+        print(style, '\n', strength, '\n', cost)
     
     def destroy_attack(self):
         if self.current_attack:  # Verifica se há um ataque atual

@@ -17,6 +17,13 @@ class UI:
             path = weapon['graphic']  # Obtém o caminho do gráfico da arma
             weapon = pygame.image.load(path).convert_alpha()  # Carrega a imagem da arma
             self.weapon_graphics.append(weapon)  # Adiciona a imagem à lista
+            
+        # Convertendo dicionário de magias:
+        self.magic_graphics = []  # Lista para armazenar gráficos das magias
+        
+        for magic in magic_data.values(): # Itera sobre as magias
+            magic = pygame.image.load(magic['graphic']).convert_alpha() # Carrega a imagem da magia
+            self.magic_graphics.append(magic) # Adiciona a imagem à lista
     
     def show_bar(self, current, max_amount, bg_rect, color):
         pygame.draw.rect(self.display_surface, UI_BG_COLOR, bg_rect)  # Desenha o fundo da barra
@@ -59,9 +66,17 @@ class UI:
         
         self.display_surface.blit(weapon_surf, weapon_rect)  # Desenha a arma na tela
         
+    def magic_overlay(self, magic_index, has_switched):
+        bg_rect = self.selection_box(80, 635, has_switched)  # Obtém o retângulo da caixa de seleção
+        magic_surf = self.magic_graphics[magic_index]  # Obtém a imagem da arma
+        magic_rect = magic_surf.get_rect(center=bg_rect.center)  # Obtém o retângulo da arma
+        
+        self.display_surface.blit(magic_surf, magic_rect)  # Desenha a arma na tela
+        
     def display(self, player):
         self.show_bar(player.health, player.stats['health'], self.health_bar_rect, HEALTH_COLOR)  # Mostra a barra de vida
         self.show_bar(player.energy, player.stats['energy'], self.energy_bar_rect, ENERGY_COLOR)  # Mostra a barra de energia
         
         self.show_exp(player.exp)  # Mostra a experiência do jogador
         self.weapon_overlay(player.weapon_index, not player.can_switch_weapon)  # Mostra a arma do jogador
+        self.magic_overlay(player.magic_index, not player.can_switch_magic)

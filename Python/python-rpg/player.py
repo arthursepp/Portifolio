@@ -1,9 +1,9 @@
 import pygame  # Importa a biblioteca pygame
-from settings import *  # Importa todas as configurações do arquivo settings.py
+from settings import *  # Importa todas as configurações do arquivo settings.py,
 from support import *  # Importa funções de suporte
 
 class Player(pygame.sprite.Sprite):  # Define a classe Player que herda de pygame.sprite.Sprite
-    def __init__(self, pos, groups, obstacle_sprites, create_attack, destroy_attack):
+    def __init__(self, pos, groups, obstacle_sprites, create_attack, destroy_attack, create_magic):
         super().__init__(groups)  # Inicializa a classe base com os grupos de sprites
         self.image = pygame.image.load('Python/python-rpg/graphics/test/player.png').convert_alpha()  # Carrega a imagem do jogador
         self.rect = self.image.get_rect(topleft=pos)  # Define o retângulo do jogador
@@ -31,6 +31,13 @@ class Player(pygame.sprite.Sprite):  # Define a classe Player que herda de pygam
         self.can_switch_weapon = True  # Estado de troca de arma
         self.weapon_switch_time = None  # Tempo da última troca de arma
         self.switch_duration_cooldown = 200  # Tempo de recarga da troca de arma
+        
+        #Mágica
+        self.create_magic = create_magic  # Função para criar mágica
+        self.magic_index = 0 # Índice da mágica atual
+        self.magic = list(magic_data.keys())[self.magic_index]  # Nome da arma atual
+        self.can_switch_magic = True  # Estado de troca de mágica
+        self.magic_switch_time = None  # Tempo da última troca de mágica        
         
         self.obstacle_sprites = obstacle_sprites  # Sprites de obstáculos
         
@@ -87,7 +94,11 @@ class Player(pygame.sprite.Sprite):  # Define a classe Player que herda de pygam
             if keys[pygame.K_LCTRL]:
                 self.attacking = True  # Inicia a mágica
                 self.attack_time = pygame.time.get_ticks()  # Registra o tempo da mágica
-                print('magic')  # Exibe "magic" no console
+                
+                style = list(magic_data.keys())[self.magic_index]  # Obtém o estilo da mágica
+                strength = list(magic_data.values())[self.magic_index]['strength']  + self.stats['magic'] # Obtém a força
+                cost = list(magic_data.values())[self.magic_index]['cost'] # Obtém o custo                
+                self.create_magic(style,strength,cost) # Cria a mágica
         
             if keys[pygame.K_q] and self.can_switch_weapon:
                 self.can_switch_weapon = False  # Desabilita a troca de arma
@@ -99,6 +110,18 @@ class Player(pygame.sprite.Sprite):  # Define a classe Player que herda de pygam
                     self.weapon_index = 0  # Volta para a primeira arma
                     
                 self.weapon = list(weapon_data.keys())[self.weapon_index]  # Atualiza a arma atual
+                
+            if keys[pygame.K_e] and self.can_switch_magic:
+                self.can_switch_magic = False  # Desabilita a troca de mágica
+                self.magic_switch_time = pygame.time.get_ticks()  # Registra o tempo da troca
+                
+                if self.magic_index < len(list(magic_data.keys())) - 1:
+                    self.magic_index += 1  # Troca para a próxima mágica
+                else:
+                    self.magic_index = 0  # Volta para a primeira mágica
+                    
+                self.magic = list(magic_data.keys())[self.magic_index]  # Atualiza a mágica atual
+                print('magic')
         
     def get_status(self):
         # Atualiza o status do jogador
@@ -165,6 +188,10 @@ class Player(pygame.sprite.Sprite):  # Define a classe Player que herda de pygam
         if not self.can_switch_weapon:
             if current_time - self.weapon_switch_time >= self.switch_duration_cooldown:
                 self.can_switch_weapon = True  # Permite trocar de arma novamente
+                
+        if not self.can_switch_magic:
+            if current_time - self.magic_switch_time >= self.switch_duration_cooldown:
+                self.can_switch_magic = True  # Permite trocar de arma novamente
                 
     def animate(self):
         # Anima o jogador
