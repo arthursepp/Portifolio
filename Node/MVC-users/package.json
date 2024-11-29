@@ -10,6 +10,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "express-handlebars": "^8.0.1"
+    "express-handlebars": "^8.0.1",
+    "mvc-users": "file:"
   }
 }
