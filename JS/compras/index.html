@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">    
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <title>Lista de compras</title>
+</head>
+<body>
+
+    <div class="container-modal" id="modal">
+        <div class="modal">
+            <header>
+                <h2>Adicionar novo produto à lista</h2>
+            </header>
+
+            <div class="body-modal">
+                <div class="input-field">
+                    <label for="nomeDoProduto">Nome do produto:</label>
+                    <input
+                        type="text"
+                        name=""
+                        id="nomeProduto"
+                        class="nome-produto"
+                        placeholder="Sabão em pó"
+                    >
+                </div>
+
+                <div class="input-field">
+                    <label for="marcaDoProduto">Marca do produto</label>
+                    <input 
+                        type="text"
+                        name="marcaDoProduto"
+                        id="marcaProduto"
+                        class="marca-produto"
+                        placeholder="OMO"
+                    >
+                </div>
+
+                <div class="input-field">
+                    <label for="precoDoProduto">Preço do produto</label>
+                    <input 
+                        type="text"
+                        name="precoDoProduto"
+                        id="precoProduto"
+                        class="preco-produto"
+                        placeholder="R$ 30"
+                    >
+                </div>
+            </div>
+
+            <footer>
+                <button type="button" class="add-item-modal" id="fecharModal">
+                    Fechar
+                </button>                
+                <button type="button" class="add-item-modal" id="addItemModal">
+                    Adicionar item
+                </button>
+            </footer>
+        </div>
+    </div>
+
+    <div class="container">
+
+        <header>
+
+            <h2>
+                Sua lista de compras 
+                <i class="fa fa-shopping-cart"></i>            
+            </h2>
+
+            <h2>
+                <span>Total:</span>
+                <span id="precoInicial"></span>
+            </h2>
+
+        </header>
+
+        <button type="button" class="add-item" id="addItem">
+            Adicionar item à lista de compras
+            <i class="fa fa-plus"></i>
+        </button>        
+
+        <div class="lista-de-itens" id="lista">
+            
+        </div>
+    </div>    
+
+    <script src="script.js"></script>
+</body>
+</html>
