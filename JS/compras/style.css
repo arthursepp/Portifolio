@@ -107,13 +107,6 @@ body {
     background-color: #989898;
 }
 
-.produto-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 10px;
-}
-
 .produto-item button {
     padding: 10px;
     cursor: pointer;
@@ -121,26 +114,37 @@ body {
     background-color: transparent;
 }
 
+.produto-item .deletar-produto,
+.produto-item .editar-produto {        
+    color: #FFF;         
+}
+
 .produto-item .deletar-produto {
     background-color: red;
-    color: #FFF;
-    border-radius: 5px;
 }
 
 .produto-item .deletar-produto:hover {
-    background-color: rgb(198, 0, 0);
-    color: #FFF;
-    border-radius: 5px;
+    background-color: rgb(198, 0, 0);    
 }
 
 .produto-item .editar-produto {
-    background-color: rgb(20, 160, 220);
-    color: #FFF;
-    border-radius: 5px;
+    background-color: rgb(20, 160, 220);      
 }
 
 .produto-item .editar-produto:hover {
-    background-color: rgb(17, 134, 185);
-    color: #FFF;
-    border-radius: 5px;
+    background-color: rgb(17, 134, 185);    
+}
+
+table {
+    margin-top: 20px;
+    padding: 10px;
+    width: 100%;
+    border: 1px solid #ccc;
+    text-align: center;
+    border-collapse: collapse;
+}
+
+th, td {
+    border: 1px solid #ccc;
+    padding: 8px;    
 }

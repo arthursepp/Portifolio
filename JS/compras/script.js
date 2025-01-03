@@ -5,44 +5,51 @@ document.addEventListener('DOMContentLoaded', function() {
 })
 
 class Produto {
-    constructor(nome, marca, preco) {
+    constructor(nome, qtd, marca, preco) {
         this.nome = nome
         this.marca = marca
+        this.qtd = qtd
         this.preco = preco
     }    
 }
 
 function listaDeCompras() {
     const nome = document.getElementById('nomeProduto')
+    const qtd = document.getElementById('qtdProduto')
     const marca = document.getElementById('marcaProduto')
     const preco = document.getElementById('precoProduto')
     const addItem = document.getElementById('addItemModal')  
-    const lista = document.getElementById('lista')  
+    const tabelaProdutos = document.getElementById('tabelaProdutos')
 
     var precoTotal = 0    
 
     let carrinho = []
 
-    addItem.addEventListener('click', () => {
+    addItem.addEventListener('click', () => {        
         const precoValue = preco.value
         const precoFloat = parseFloat(precoValue)
 
         // Caso o preço não seja um número:
-        if (isNaN(precoFloat)) {
-            alert('O valor inserido no preço não é válido. Tente novamente.')
+        if (
+            isNaN(precoFloat) ||
+            isNaN(parseFloat(qtd.value)) ||
+            qtd.value < 1
+        ) {
+            alert('Algum(ns) do(s) valor(es) não é válido. Tente novamente.')
         } else { // Caso seja um número:
 
             //Esconde o modal
             document.getElementById('modal').style.display = 'none'
 
             //Adiciona o preço do produto adicionado ao total
-            precoTotal += precoFloat
+            precoTotal += (precoFloat * qtd.value)
             //Formatação do preço total para exibir duas casas decimais:
             document.getElementById('precoInicial').innerText = "R$ " + precoTotal.toFixed(2)
             
             //Adicionando um novo objeto Produto ao array do carrinho:
             const novoProduto = new Produto(
                 nome.value,
+                qtd.value,
                 marca.value,
                 preco.value
             )            
@@ -50,27 +57,33 @@ function listaDeCompras() {
             
             // Zerando os valores:
             nome.value = ""
+            qtd.value = 1            
             marca.value = ""
-            preco.value = ""            
+            preco.value = ""
 
             //Mostrando o carrinho no console:
             console.log(carrinho)
 
             //Listando os produtos do carrinho na página:
-            const produtoHTML = document.createElement('div')
-            produtoHTML.className = 'produto-item'
-            produtoHTML.innerHTML = `
-                <span>Nome: ${novoProduto.nome}</span>
-                <span>Marca: ${novoProduto.marca}</span>
-                <span>Preço: R$ ${novoProduto.preco}</span>
-                <button type="button" class="editar-produto" id="editarProduto">
-                    <i class="fa fa-pencil"></i>
-                </button>
-                <button type="button" class="deletar-produto" id="deletarProduto">
-                    <i class="fa fa-trash"></i>
-                </button>
+            const novaLinha = document.createElement('tr')
+            novaLinha.classList = 'produto-item'
+
+            novaLinha.innerHTML = `
+                <td>${novoProduto.nome}</td>
+                <td>${novoProduto.qtd}</td>
+                <td>${novoProduto.marca}</td>
+                <td>${novoProduto.preco}</td>
+
+                <td class='actions'>
+                    <button type='button' class='editar-produto'>
+                        <i class='fa fa-pencil'></i>
+                    </button>
+                    <button type='button' class='deletar-produto'>
+                        <i class='fa fa-trash'></i>
+                    </button>                    
+                </td>
             `
-            lista.appendChild(produtoHTML)
+            tabelaProdutos.appendChild(novaLinha)
         }
     })
 }

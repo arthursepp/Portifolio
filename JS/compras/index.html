@@ -28,6 +28,17 @@
                 </div>
 
                 <div class="input-field">
+                    <label for="qtdDoProduto">Quantidade:</label>
+                    <input
+                        type="text"
+                        name=""
+                        id="qtdProduto"
+                        class="qtd-produto"
+                        placeholder="10"
+                    >
+                </div>
+
+                <div class="input-field">
                     <label for="marcaDoProduto">Marca do produto</label>
                     <input 
                         type="text"
@@ -83,7 +94,20 @@
         </button>        
 
         <div class="lista-de-itens" id="lista">
-            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>Quantidade</th>
+                        <th>Marca</th>
+                        <th>Preços</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="tabelaProdutos">
+
+                </tbody>
+            </table>
         </div>
     </div>    
 
