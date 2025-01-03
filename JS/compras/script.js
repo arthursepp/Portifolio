@@ -5,7 +5,8 @@ document.addEventListener('DOMContentLoaded', function() {
 })
 
 class Produto {
-    constructor(nome, qtd, marca, preco) {
+    constructor(id, nome, qtd, marca, preco) {
+        this.id = id
         this.nome = nome
         this.marca = marca
         this.qtd = qtd
@@ -14,6 +15,7 @@ class Produto {
 }
 
 function listaDeCompras() {
+    let id = 1
     const nome = document.getElementById('nomeProduto')
     const qtd = document.getElementById('qtdProduto')
     const marca = document.getElementById('marcaProduto')
@@ -32,41 +34,45 @@ function listaDeCompras() {
         // Caso o preço não seja um número:
         if (
             isNaN(precoFloat) ||
-            isNaN(parseFloat(qtd.value)) ||
+            isNaN(parseInt(qtd.value)) ||
             qtd.value < 1
         ) {
-            alert('Algum(ns) do(s) valor(es) não é válido. Tente novamente.')
-        } else { // Caso seja um número:
+            alert('Alguns dos valores são inválidos. Tente novamente.')
+        } else if (!nome.value.trim()){ // Caso o campo do nome esteja vazio
+            alert('Insira um nome')
+        }        
+        else { // Caso seja um número:
 
             //Esconde o modal
-            document.getElementById('modal').style.display = 'none'
-
-            //Adiciona o preço do produto adicionado ao total
-            precoTotal += (precoFloat * qtd.value)
-            //Formatação do preço total para exibir duas casas decimais:
-            document.getElementById('precoInicial').innerText = "R$ " + precoTotal.toFixed(2)
+            document.getElementById('modal').style.display = 'none'                      
             
             //Adicionando um novo objeto Produto ao array do carrinho:
             const novoProduto = new Produto(
+                Date.now(),                
                 nome.value,
-                qtd.value,
+                parseInt(qtd.value),
                 marca.value,
                 preco.value
             )            
-            carrinho.push(novoProduto)
+            carrinho.push(novoProduto)        
+
+            //Mostrando o carrinho no console:
+            console.log(carrinho)
+
+            precoTotal += novoProduto.preco * novoProduto.qtd
+            //Formatação do preço total para exibir duas casas decimais:
+            document.getElementById('precoInicial').innerText = "R$ " + precoTotal.toFixed(2)
             
             // Zerando os valores:
             nome.value = ""
             qtd.value = 1            
             marca.value = ""
-            preco.value = ""
-
-            //Mostrando o carrinho no console:
-            console.log(carrinho)
+            preco.value = ""            
 
             //Listando os produtos do carrinho na página:
             const novaLinha = document.createElement('tr')
             novaLinha.classList = 'produto-item'
+            novaLinha.dataset.id = novoProduto.id
 
             novaLinha.innerHTML = `
                 <td>${novoProduto.nome}</td>
@@ -75,17 +81,35 @@ function listaDeCompras() {
                 <td>${novoProduto.preco}</td>
 
                 <td class='actions'>
-                    <button type='button' class='editar-produto'>
+                    <button type='button' id='deletar' class='editar-produto'>
                         <i class='fa fa-pencil'></i>
                     </button>
-                    <button type='button' class='deletar-produto'>
+                    <button type='button' id='editar' class='deletar-produto'>
                         <i class='fa fa-trash'></i>
                     </button>                    
                 </td>
             `
-            tabelaProdutos.appendChild(novaLinha)
+            tabelaProdutos.appendChild(novaLinha)            
+
+            novaLinha.querySelector('.deletar-produto').addEventListener('click', () => {
+                deletarProduto(novoProduto.id)
+            })
         }
     })
+
+    function deletarProduto(id) {
+        carrinho = carrinho.filter(produto => produto.id !== id)
+
+        precoTotal = carrinho.reduce((total, produto) => total + produto.preco * produto.qtd, 0)
+        document.getElementById('precoInicial').innerText = 'R$ ' + precoTotal.toFixed(2)
+
+        const linha = document.querySelector(`tr[data-id="${id}"]`)
+        if (linha) linha.remove()
+
+        console.log("Produto removido:", id)
+        console.log("Carrinho atualizado:", carrinho)
+    }
+
 }
 
 function operateModal() {
