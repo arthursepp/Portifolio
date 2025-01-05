@@ -1,19 +1,23 @@
+// Definindo informações assim que a página é carregada:
 document.addEventListener("DOMContentLoaded", function () {
-    let precoInicial = 0.0;
-    document.getElementById("precoInicial").innerText = "R$ " + precoInicial.toFixed(2);
+    let precoInicial = 0.0; // Valor inicial do preço total
+    document.getElementById("precoInicial").innerText = "R$ " + precoInicial.toFixed(2); // Formatando o preço total
 });
 
+// Construindo o produto
 class Produto {
     constructor(id, nome, qtd, marca, preco) {
-        this.id = id;
-        this.nome = nome;
-        this.qtd = qtd;
-        this.marca = marca;
-        this.preco = preco;
+        this.id = id; // ID único do produto
+        this.nome = nome; // Nome do produto
+        this.qtd = qtd; // Quantidade do produto
+        this.marca = marca; // Marca do produto
+        this.preco = preco; // Preço do produto
     }
 }
 
+// Função da lista de compras
 function listaDeCompras() {
+    // Obtendo referências aos elementos HTML:
     const nome = document.getElementById("nomeProduto");
     const qtd = document.getElementById("qtdProduto");
     const marca = document.getElementById("marcaProduto");
@@ -21,31 +25,34 @@ function listaDeCompras() {
     const addItem = document.getElementById("addItemModal");
     const tabelaProdutos = document.getElementById("tabelaProdutos");
 
-    let precoTotal = 0;
-    let carrinho = [];
-    let produtoEditando = null;
+    let precoTotal = 0; // Variável para armazenar o preço total
+    let carrinho = []; // Lista de produtos no carrinho
+    let produtoEditando = null; // Produto que está sendo editado (se houver)
 
-    // Adicionar produto
+    // Adicionar produto à lista ou atualizar um existente
     addItem.addEventListener("click", () => {
-        const precoValue = parseFloat(preco.value);
-        const qtdValue = parseInt(qtd.value);
+        const precoValue = parseFloat(preco.value); // Converte o valor do preço para número
+        const qtdValue = parseInt(qtd.value); // Converte a quantidade para número inteiro
 
+        // Validações dos campos
         if (
             isNaN(precoValue) ||
             isNaN(qtdValue) ||
             qtdValue < 1 ||
             !nome.value.trim()
         ) {
-            alert("Preencha os campos corretamente.");
+            alert("Preencha os campos corretamente."); // Alerta se os campos não estiverem válidos
         } else {
             if (produtoEditando) {
+                // Atualiza os dados do produto em edição
                 produtoEditando.nome = nome.value.trim();
                 produtoEditando.qtd = qtdValue;
                 produtoEditando.marca = marca.value.trim();
                 produtoEditando.preco = precoValue;
                 atualizarTabela();
-                produtoEditando = null;
+                produtoEditando = null; // Limpa o status de edição para editar novamente, se necessário.
             } else {
+                // Criando um novo produto:
                 const novoProduto = new Produto(
                     Date.now(),
                     nome.value.trim(),
@@ -53,37 +60,36 @@ function listaDeCompras() {
                     marca.value.trim(),
                     precoValue
                 );
-                carrinho.push(novoProduto);
-                precoTotal += novoProduto.preco * novoProduto.qtd;
-                adicionarLinhaTabela(novoProduto);
+                carrinho.push(novoProduto); // Adiciona o novo produto à lista
+                precoTotal += novoProduto.preco * novoProduto.qtd; // Atualiza o preço total
+                adicionarLinhaTabela(novoProduto); // Adiciona o produto à tabela
             }
 
-            atualizarPrecoTotal();
-            limparCampos();
-            fecharModal();
+            // Limpando os campos do modal
+            nome.value = "";
+            qtd.value = 1;
+            marca.value = "";
+            preco.value = "";
+
+            // Atualiza o preço total exibido na página
+            atualizarPrecoTotal()          
+            fecharModal(); // Fecha o modal
         }
     });
 
-    // Função para atualizar preço total
+    // Atualiza o preco total (Em uma função por ser usado múltiplas vezes.)
     function atualizarPrecoTotal() {
         precoTotal = carrinho.reduce((total, produto) => total + produto.preco * produto.qtd, 0);
-        document.getElementById("precoInicial").innerText = "R$ " + precoTotal.toFixed(2);
+        document.getElementById("precoInicial").innerText = "R$ " + precoTotal.toFixed(2);            
     }
 
-    // Função para limpar os campos
-    function limparCampos() {
-        nome.value = "";
-        qtd.value = 1;
-        marca.value = "";
-        preco.value = "";
-    }
-
-    // Função para adicionar uma linha na tabela
+    // Adiciona o novo produto, com suas informações, à tabela:
     function adicionarLinhaTabela(produto) {
-        const novaLinha = document.createElement("tr");
-        novaLinha.classList.add("produto-item");
-        novaLinha.dataset.id = produto.id;
+        const novaLinha = document.createElement("tr"); // Criando uma nova linha na tabela para o produto
+        novaLinha.classList.add("produto-item"); // Adicionando a classe 'produto-item' à nova linha.
+        novaLinha.dataset.id = produto.id; // Define o ID do produto como atributo data-id
 
+        // Conteúdo da nova linha:
         novaLinha.innerHTML = `
             <td>${produto.nome}</td>
             <td>${produto.qtd}</td>
@@ -99,45 +105,50 @@ function listaDeCompras() {
             </td>
         `;
 
+        // Editar o produto ao clicar no botão de edição
         novaLinha.querySelector(".editar-produto").addEventListener("click", () => {
+            // Chamando a função de editar o produto e passando para ela o produto a ser editado
             editarProduto(produto.id);
         });
 
+        // Deletar o produto ao clicar no botão de exclusão
         novaLinha.querySelector(".deletar-produto").addEventListener("click", () => {
+            // Chamando a função de deletar o produto e passando para ela o produto a ser deletado
             deletarProduto(produto.id);
         });
 
-        tabelaProdutos.appendChild(novaLinha);
+        tabelaProdutos.appendChild(novaLinha); // Adiciona a nova linha à tabela
     }
 
-    // Função para deletar produto
+    // Função para deletar um produto do carrinho
     function deletarProduto(id) {
-        carrinho = carrinho.filter((produto) => produto.id !== id);
-        atualizarTabela();
-        atualizarPrecoTotal();
+        carrinho = carrinho.filter((produto) => produto.id !== id); // Remove o produto pelo ID
+        atualizarTabela(); // Atualiza a tabela para refletir a exclusão
+        atualizarPrecoTotal(); // Atualiza o preço total
     }
 
-    // Função para editar produto
+    // Função para editar um produto
     function editarProduto(id) {
-        const produto = carrinho.find((p) => p.id === id);
-        if (!produto) return alert("Produto não encontrado.");
+        const produto = carrinho.find((p) => p.id === id); // Encontra o produto pelo ID
+        if (!produto) return alert("Produto não encontrado."); // Exibe erro se o produto não existir
 
+        // Preenche os campos do modal com os dados do produto
         produtoEditando = produto;
         nome.value = produto.nome;
         qtd.value = produto.qtd;
         marca.value = produto.marca;
         preco.value = produto.preco;
 
-        abrirModal();
+        abrirModal(); // Abre o modal para edição
     }
 
-    // Atualizar a tabela
+    // Atualizando a tabela
     function atualizarTabela() {
-        tabelaProdutos.innerHTML = "";
-        carrinho.forEach((produto) => adicionarLinhaTabela(produto));
+        tabelaProdutos.innerHTML = ""; // Limpa o conteúdo da tabela
+        carrinho.forEach((produto) => adicionarLinhaTabela(produto)); // Recria a tabela com os produtos do carrinho
     }
 
-    // Modal control
+    // Operando o modal:
     function abrirModal() {
         document.getElementById("modal").style.display = "block";
         document.getElementById("containerModal").style.display = "flex";
@@ -149,20 +160,24 @@ function listaDeCompras() {
     }
 }
 
+// Função para operar o modal (abrir/fechar)
 function operateModal() {
     const open = document.getElementById("addItem");
     const close = document.getElementById("fecharModal");
 
+    // Evento para abrir o modal
     open.addEventListener("click", () => {
         document.getElementById("modal").style.display = "block";
         document.getElementById("containerModal").style.display = "flex";
     });
 
+    // Evento para fechar o modal
     close.addEventListener("click", () => {
         document.getElementById("modal").style.display = "none";
         document.getElementById("containerModal").style.display = "none";
     });
 }
 
+// Inicializa o modal e a lista de compras
 operateModal();
 listaDeCompras();
