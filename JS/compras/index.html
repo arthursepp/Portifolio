@@ -9,8 +9,8 @@
 </head>
 <body>
 
-    <div class="container-modal" id="modal">
-        <div class="modal">
+    <div class="container-modal" id="containerModal">
+        <div class="modal" id="modal">
             <header>
                 <h2>Adicionar novo produto à lista</h2>
             </header>
@@ -32,6 +32,7 @@
                     <input
                         type="text"
                         name=""
+                        value="1"
                         id="qtdProduto"
                         class="qtd-produto"
                         placeholder="10"
@@ -62,14 +63,76 @@
             </div>
 
             <footer>
-                <button type="button" class="add-item-modal" id="fecharModal">
+                <button type="button" class="btn-modal" id="fecharModal">
                     Fechar
                 </button>                
-                <button type="button" class="add-item-modal" id="addItemModal">
+                <button type="button" class="btn-modal" id="addItemModal">
                     Adicionar item
                 </button>
             </footer>
-        </div>
+        </div>     
+
+        <div class="modal modal-edit" id="modalEdit">
+            <header>
+                <h2>Editar informações do produto</h2>
+            </header>
+
+            <div class="body-modal">
+                <div class="input-field">
+                    <label for="nomeDoProduto">Nome do produto:</label>
+                    <input
+                        type="text"
+                        name=""
+                        id="nomeProdutoEdit"
+                        class="nome-produto"
+                        placeholder="Sabão em pó"
+                    >
+                </div>
+
+                <div class="input-field">
+                    <label for="qtdDoProduto">Quantidade:</label>
+                    <input
+                        type="text"
+                        name=""
+                        value=""
+                        id="qtdProdutoEdit"
+                        class="qtd-produto"
+                        placeholder="10"
+                    >
+                </div>
+
+                <div class="input-field">
+                    <label for="marcaDoProduto">Marca do produto</label>
+                    <input 
+                        type="text"
+                        name="marcaDoProduto"
+                        id="marcaProdutoEdit"
+                        class="marca-produto"
+                        placeholder="OMO"
+                    >
+                </div>
+
+                <div class="input-field">
+                    <label for="precoDoProduto">Preço do produto</label>
+                    <input 
+                        type="text"
+                        name="precoDoProduto"
+                        id="precoProdutoEdit"
+                        class="preco-produto"
+                        placeholder="R$ 30"
+                    >
+                </div>
+            </div>
+
+            <footer>
+                <button type="button" class="btn-modal" id="fecharModalEdicao">
+                    Fechar
+                </button>                
+                <button type="button" class="btn-modal" id="editarItemModal">
+                    Adicionar item
+                </button>
+            </footer>
+        </div>        
     </div>
 
     <div class="container">
@@ -110,6 +173,8 @@
             </table>
         </div>
     </div>    
+
+    <!-- <button id="editItem">aaaaa</button> -->
 
     <script src="script.js"></script>
 </body>
