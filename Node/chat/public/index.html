@@ -1,64 +1,92 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-<head>
+  <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Chat</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
-        }
-        #chat-box {
-            height: 400px;
-            overflow-y: scroll;
-            border: 1px solid #ddd;
-            padding: 10px;
-            margin-bottom: 20px;
-        }
-        #message-input {
-            width: calc(100% - 60px);
-        }
-        #send-button {
-            width: 50px;
-        }
-    </style>
-</head>
-<body>
+    <title>Chat</title>
+    <link rel="stylesheet" href="style.css" />    
+    <link rel="icon" href="./img/node.ico">
+  </head>
+  <body>   
+
+    <div id="user-modal" class="modal">
+        <div class="modal-content">                   
+            <h2>
+                Qual o seu nome?
+            </h2>
+            <input type="text" id="username" placeholder="Alberto Silva Sauro" autocomplete="off" >            
+            <button id="setUsername" >
+                <h3>Entrar</h3>
+            </button>
+        </div>
+    </div>
+
     <h2>Chat em tempo real</h2>
-    <div id="chat-box"></div>
-    <input type="text" id="message-input" placeholder="Digite sua mensagem..." autocomplete="off" />
-    <button id="send-button">Enviar</button>
+    <div id="chat-container" style="display: none;">
+        <div id="chat-box"></div>
+        <div class="user-input">
+            <input
+            type="text"
+            id="message-input"
+            placeholder="Digite sua mensagem..."
+            autocomplete="off"
+            />
+            <button id="send-button" class="generic-btn" title="Enviar mensagem">
+                <i class="fa fa-arrow-up"></i>
+            </button>
+        </div>
+    </div>
 
     <script src="/socket.io/socket.io.js"></script>
     <script>
         const socket = io();
-        const chatBox = document.getElementById('chat-box');
-        const messageInput = document.getElementById('message-input');
-        const sendButton = document.getElementById('send-button');
+        const chatBox = document.getElementById("chat-box");
+        const messageInput = document.getElementById("message-input");
+        const sendButton = document.getElementById("send-button");
+        const usernameInput = document.getElementById("username");
+        const setUsernameButton = document.getElementById("setUsername");
+        const chatContainer = document.getElementById("chat-container");
+        const userModal = document.getElementById("user-modal");
+        let username = "";
+
+        // Quando o botão "Entrar" for clicado
+        setUsernameButton.onclick = () => {
+            const name = usernameInput.value.trim();
+            if (name) {
+                username = name;
+                userModal.style.display = "none"; // Oculta o modal
+                chatContainer.style.display = "block"; // Mostra o chat
+            }
+        };
+
+        // Fechar o modal ao pressionar "Enter"
+        usernameInput.addEventListener("keyup", (e) => {
+            if (e.key === "Enter") setUsernameButton.click();
+        });
 
         // Enviar mensagem ao clicar no botão
         sendButton.onclick = () => {
             const message = messageInput.value.trim();
-            if (message) {
-                socket.emit('chat message', message);
-                messageInput.value = '';
+            if (message && username) {
+                socket.emit("chat message", { user: username, text: message });
+                messageInput.value = "";
             }
         };
 
         // Enviar mensagem ao pressionar Enter
-        messageInput.addEventListener('keyup', (e) => {
-            if (e.key === 'Enter') sendButton.click();
+        messageInput.addEventListener("keyup", (e) => {
+            if (e.key === "Enter") sendButton.click();
         });
 
         // Receber mensagem e exibir no chat
-        socket.on('chat message', (msg) => {
-            const div = document.createElement('div');
-            div.textContent = msg;
+        socket.on("chat message", (data) => {
+            const div = document.createElement("div");
+            div.innerHTML = `<strong>${data.user}:</strong> ${data.text}`;
             chatBox.appendChild(div);
             chatBox.scrollTop = chatBox.scrollHeight;
         });
     </script>
-</body>
+  </body>
 </html>
