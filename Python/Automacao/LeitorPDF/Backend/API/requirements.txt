@@ -1,0 +1,10 @@
+pytesseract
+pypdf
+pypdf2
+PyMuPDF
+pytesseract
+opencv-python
+flask
+flask-cors
+frontend
+tools
